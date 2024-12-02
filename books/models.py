@@ -20,6 +20,8 @@ class Category(models.Model):
     name = models.CharField(max_length=250)
     image = models.ImageField(upload_to='category-images/', null=True, blank=True)
 
+    objects = models.Manager
+
     def __str__(self):
         return self.name
 
@@ -34,7 +36,7 @@ class Book(models.Model):
     description = models.TextField(blank=True)
     pages = models.IntegerField()
     borrowing_duration = models.IntegerField()
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name='books')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='books')
 
     def __str__(self):
         return f"{self.title}  -  {self.authors}"
@@ -60,6 +62,10 @@ class BookStatus(models.Model):
 
     def __str__(self):
         return f"{self.book} borrowed by {self.user}"
+
+    class Meta:
+        verbose_name = "Book status"
+        verbose_name_plural = "Book statuses"
 
 
 class BookReview(models.Model):

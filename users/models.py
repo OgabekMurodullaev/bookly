@@ -20,6 +20,7 @@ class Profile(models.Model):
     about = models.TextField()
     profile_image = models.ImageField(upload_to='profile-images/', null=True, blank=True)
 
+    objects = models.Manager
     def __str__(self):
         return f"{self.user.id}"
 
