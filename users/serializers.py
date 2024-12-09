@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User
+from .models import User, Profile
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -20,3 +20,30 @@ class SignUpSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "first_name", "last_name", "user_type")
+
+class ProfileListSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ("user", "profile_image")
+
+
+class ProfileDetailSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    followers = serializers.SerializerMethodField('get_followers_count')
+    following = serializers.SerializerMethodField('get_following_count')
+
+    class Meta:
+        model = Profile
+        fields = ("user", "profile_image", "followers", "following")
+
+    def get_followers_count(self, obj):
+        return obj.followers.count()
+
+    def get_following_count(self, obj):
+        return obj.following.count()

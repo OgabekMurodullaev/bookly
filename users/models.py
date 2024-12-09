@@ -26,8 +26,8 @@ class Profile(models.Model):
 
 
 class Follow(models.Model):
-    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
-    followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name='followers')
+    follower = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='following')
+    followed = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='followers')
 
     def __str__(self):
         return f"{self.follower} follows {self.followed}"
