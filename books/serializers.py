@@ -8,3 +8,13 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ("id", "name", "image")
 
+
+class BookListSerializer(serializers.ModelSerializer):
+    comments = serializers.SerializerMethodField(method_name="get_likes_count")
+
+    class Meta:
+        model = Book
+        fields = ("id", "title", "authors", "category", "cover_image", "comments")
+
+    def get_likes_count(self, obj):
+        return obj.reviews.count()

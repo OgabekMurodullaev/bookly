@@ -32,19 +32,28 @@ class Category(models.Model):
 
 class Book(models.Model):
     title = models.CharField(max_length=250)
-    authors = models.ManyToManyField(Author, related_name='books')
     description = models.TextField(blank=True)
+    cover_image = models.ImageField(upload_to='book-images/', null=True, blank=True)
     pages = models.IntegerField()
     borrowing_duration = models.IntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='books')
 
+    objects = models.Manager
+
     def __str__(self):
-        return f"{self.title}  -  {self.authors}"
+        return f"{self.title}"
 
     class Meta:
         verbose_name = "Book"
         verbose_name_plural = "Books"
 
+
+class BookAuthors(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='authors')
+    authors = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+
+    def __str__(self):
+        return f"{self.book.__str__()} | {self.authors.__str__()}"
 
 class BookStatus(models.Model):
     STATUS_CHOICES = (
