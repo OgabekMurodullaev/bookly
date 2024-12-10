@@ -1,6 +1,7 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
-from .models import User, Profile
+from .models import User, Profile, Follow
 
 
 class SignUpSerializer(serializers.ModelSerializer):
@@ -42,8 +43,40 @@ class ProfileDetailSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ("user", "profile_image", "followers", "following")
 
+    @extend_schema_field(int)
     def get_followers_count(self, obj):
         return obj.followers.count()
 
+    @extend_schema_field(int)
     def get_following_count(self, obj):
         return obj.following.count()
+
+
+class UserFollowSerializer(serializers.ModelSerializer):
+    followed = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all())
+
+    class Meta:
+        model = Profile
+        fields = ["followed"]
+
+    def create(self, validated_data):
+        follower = self.context['request'].user.profile
+        followed = validated_data['followed']
+
+        if follower == followed:
+            raise serializers.ValidationError("You cannot follow yourself")
+
+        follow, created = Follow.objects.get_or_create(follower=follower, followed=followed)
+
+        if not created:
+            raise serializers.ValidationError("You are already following this user.")
+
+        return follow
+
+
+class UserUnfollowSerializer(serializers.ModelSerializer):
+    followed = serializers.IntegerField()
+
+    class Meta:
+        model = Follow
+        fields = ['followed']

@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from .models import *
@@ -16,5 +17,6 @@ class BookListSerializer(serializers.ModelSerializer):
         model = Book
         fields = ("id", "title", "authors", "category", "cover_image", "comments")
 
+    @extend_schema_field(int)
     def get_likes_count(self, obj):
         return obj.reviews.count()

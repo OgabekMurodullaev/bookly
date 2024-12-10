@@ -14,7 +14,7 @@ class UserProfileInline(admin.StackedInline):
 class CustomUserAdmin(UserAdmin):
     inlines = (UserProfileInline, )
 
-    list_display = ["username", "first_name", "last_name", "email", "is_active"]
+    list_display = ["id", "username", "first_name", "last_name", "email", "is_active"]
     list_filter = ["is_active", "user_type"]
     search_fields = ("username", "first_name", "last_name", "email")
     ordering = ("username", )
