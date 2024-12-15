@@ -1,13 +1,14 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from yaml import serialize
 
 from books.filters import BookFilter
 from books.models import Category, Book, BookReview
-from books.serializers import CategorySerializer, BookListSerializer, BookDetailSerializer, BookReviewListSerializer
+from books.serializers import CategorySerializer, BookListSerializer, BookDetailSerializer, BookReviewListSerializer, \
+    CreateBorrowSerializer
 
 
 class CategoryListAPIView(generics.ListAPIView):
@@ -56,3 +57,20 @@ class BookReviewListAPIView(APIView):
 
         serializer = BookReviewListSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CreateBorrowAPIView(APIView):
+    permission_classes = [IsAuthenticated, ]
+    serializer_class = CreateBorrowSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context={"request": request})
+        if serializer.is_valid():
+            serializer.save()
+            data = {
+                "message": "You successfully borrowed this book"
+            }
+
+            return Response(data=data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

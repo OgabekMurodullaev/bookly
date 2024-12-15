@@ -70,6 +70,8 @@ class Borrow(models.Model):
     end_date = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="borrowed")
 
+    objects = models.Manager()
+
     def __str__(self):
         return f"{self.user.username} borrowed {self.book.title}"
 
@@ -95,5 +97,3 @@ class BookReview(models.Model):
     class Meta:
         verbose_name = "Book Review"
         verbose_name_plural = "Book Reviews"
-
-
