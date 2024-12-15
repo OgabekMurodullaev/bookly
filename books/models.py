@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from users.models import User
 
@@ -55,33 +56,38 @@ class BookAuthors(models.Model):
     def __str__(self):
         return f"{self.book.__str__()} | {self.authors.__str__()}"
 
-class BookStatus(models.Model):
-    STATUS_CHOICES = (
-        ('available', 'Available'),
-        ('borrowed', 'Borrowed'),
-        ('waiting', 'Waiting'),
-        ('returned', 'returned')
-    )
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='statuses')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='borrowed_books')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available')
-    borrowed_at = models.DateTimeField(auto_now_add=True)
-    returned_at = models.DateTimeField(null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
+class Borrow(models.Model):
+    STATUS_CHOICES = [
+        ("borrowed", "Borrowed"),
+        ("returned", "Returned"),
+        ("overdue", "Overdue"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="borrows")
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="borrows")
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="borrowed")
 
     def __str__(self):
-        return f"{self.book} borrowed by {self.user}"
+        return f"{self.user.username} borrowed {self.book.title}"
 
-    class Meta:
-        verbose_name = "Book status"
-        verbose_name_plural = "Book statuses"
+    def is_overdue(self):
+        if self.status == "borrowed" and self.end_date < timezone.now().date():
+            return True
+        return False
+
 
 
 class BookReview(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews')
     rating = models.IntegerField()
     comment = models.TextField()
+
+    objects = models.Manager()
+
 
     def __str__(self):
         return f"{self.user}'s comment to {self.book}"
@@ -89,4 +95,5 @@ class BookReview(models.Model):
     class Meta:
         verbose_name = "Book Review"
         verbose_name_plural = "Book Reviews"
+
 
