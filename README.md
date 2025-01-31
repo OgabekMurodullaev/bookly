@@ -1,20 +1,26 @@
 # THIS IS LIBRARY MANAGEMENT PROJECT
 
 ## 1-step 
-Clone project from github
-`git clone https://github.com/OgabekMurodullaev/bookly.git`
+Clone project from GitHub
+```
+git clone https://github.com/OgabekMurodullaev/bookly.git
+```
 
 ## 2-step
 Enter the project directory
 
 ## 3-step 
 Create a virtual environment
-`python3 -m venv .venv`
+```
+python3 -m venv .venv
+```
 
 ## 4-step
 Activate virtual environment
-For Linux: `source .venv/bin/activate`
-For Windows: `.venv\Scripts\activate`
+For Linux: 
+```source .venv/bin/activate```
+For Windows: 
+```.venv\Scripts\activate```
 
 ## 5-step
 Create Database in your local machine
