@@ -1,4 +1,4 @@
-# THIS IS LIBRARY MANAGEMENT PROJECT
+# This is Library management system project
 
 ## 1-step 
 Clone project from GitHub
@@ -59,7 +59,7 @@ DB_PORT=5432
 ## 8-step
 Install all requirements
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ## 9-step 
