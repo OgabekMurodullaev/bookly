@@ -56,6 +56,10 @@ class BookAuthors(models.Model):
     def __str__(self):
         return f"{self.book.__str__()} | {self.authors.__str__()}"
 
+    class Meta:
+        verbose_name = "Book Author"
+        verbose_name_plural = "Book Authors"
+
 
 class Borrow(models.Model):
     STATUS_CHOICES = [

@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from yaml import serialize
 
 from books.filters import BookFilter
-from books.models import Category, Book, BookReview
+from books.models import Category, Book, BookReview, Borrow
 from books.serializers import CategorySerializer, BookListSerializer, BookDetailSerializer, BookReviewListSerializer, \
     CreateBorrowSerializer
 
@@ -74,3 +74,24 @@ class CreateBorrowAPIView(APIView):
             return Response(data=data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReturnBookAPIView(APIView):
+    permission_classes = [IsAuthenticated, ]
+    serializer_class = CreateBorrowSerializer
+
+    def put(self, request, borrow_id):
+        try:
+            borrow = Borrow.objects.get(id=borrow_id, user=request.user)
+            if borrow.status == "returned":
+                return Response(data={"detail": "This book has already been returned"}, status=status.HTTP_400_BAD_REQUEST)
+
+            borrow.status = "returned"
+            borrow.save()
+            data = {
+                "detail": "You have successfully returned this book"
+            }
+            return Response(data=data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return f"{e}"
