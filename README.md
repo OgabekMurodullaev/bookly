@@ -30,12 +30,14 @@ Create Database in your local machine
 
 ## 6-step
 Generate a secret key
-`python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'`
+```
+python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+```
 
 ## 7-step
-Create **.env** file and paste all credentials that copied from **.env.example** like below, put in above generated secret key to **SECRET_KEY** variable
+Create `.env` file and paste all credentials that copied from `.env.example` like below, put in above generated secret key to `SECRET_KEY` variable
 
-```aiignore
+```
 # Base Configuration
 SECRET_KEY=key
 DEBUG=True
@@ -50,17 +52,23 @@ DB_PORT=5432
 ```
 ## 8-step
 Install all requirements
-`pip install requirements.txt`
+```
+pip install requirements.txt
+```
 
 ## 9-step 
 Migrate the database
 
 ## 10-step
 Create superuser
-`python manage.py createsuperuser`
+```
+python manage.py createsuperuser
+```
 
 ## 11-step 
 Run the project
-`python manage.py runserver`
+```
+python manage.py runserver
+```
 
 
